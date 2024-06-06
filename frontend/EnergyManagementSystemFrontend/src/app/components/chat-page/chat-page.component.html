@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>EMS Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>EMS</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../../../../assets/logo.png" />
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="./chat-page.component.css" rel="stylesheet" />
+</head>
+<body>
+<div id="page-content-wrapper">
+  <!-- Top navigation-->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav ms-auto mt-2 mt-lg-0">
+          <li class="nav-item active"><a class="nav-link" href="/welcome/home-page">Home Page</a></li>
+          <li *ngIf="this.currentUserType=='ADMIN'" class="nav-item active"><a class="nav-link" href="/admin/admin-home-page">Admin Home</a></li>
+          <li *ngIf="this.currentUserType=='CLIENT'" class="nav-item active"><a class="nav-link" href="/client/client-home-page">Client Home</a></li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>
+            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href="/welcome/login-page">Login</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="/welcome/register-page">Create new account</a>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+<div class="container bootstrap snippets bootdey">
+  <div class="tile tile-alt" id="messages-main">
+    <div class="ms-menu">
+      <div class="ms-user clearfix">
+        <div>Signed in as <a>{{this.currentUsername}}</a></div>
+      </div>
+      <div class="p-15">
+        <div class="dropdown" *ngIf="this.currentUserType === 'ADMIN'">
+          <a class="btn btn-primary btn-block" > Clients </a>
+        </div>
+        <div class="dropdown" *ngIf="this.currentUserType === 'CLIENT'">
+          <a class="btn btn-primary btn-block" > Admins </a>
+        </div>
+      </div>
+      <div class="list-group lg-alt" *ngFor="let username of this.usernames; let i=index" >
+        <a class="list-group-item media" (click)="openChat(username)" >
+          <div class="pull-left">
+            <img src="assets/chat_img.png" alt class="img-avatar">
+          </div>
+          <div class="media-body">
+            <small class="list-group-item-heading" >{{username}}</small>
+            <div *ngIf="this.typingUsers[i]"> typing..</div>
+          </div>
+        </a>
+
+      </div>
+    </div>
+    <div class="ms-body">
+      <div class="action-header clearfix">
+        <div class="visible-xs" id="ms-menu-trigger">
+          <i class="fa fa-bars"></i>
+        </div>
+        <div class="pull-left hidden-xs">
+          <img src="assets/chat_img_2.png" alt class="img-avatar m-r-10">
+          <div class="lv-avatar pull-left">
+          </div>
+          <span>{{this.currentName}}</span>
+        </div>
+      </div>
+      <div *ngFor="let message of this.orderedAllMessages">
+        <div  *ngIf="message.receiverUid == this.currentUid">
+        <div *ngIf="!message.seen&&message.receiverUid==this.currentUid?seen(message):true">
+        <div class="message-feed media">
+        <div *ngIf="this.currentUserType=='ADMIN'" class="pull-left">
+          <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt class="img-avatar">
+        </div>
+          <div *ngIf="this.currentUserType=='CLIENT'" class="pull-left">
+            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt class="img-avatar">
+          </div>
+        <div class="media-body">
+          <div class="mf-content">
+            {{message.message}}
+          </div>
+          <small class="mf-date"><i class="fa fa-clock-o"></i> {{message.sentTimestamp}}</small>
+          <small class="mf-date"><i class="fa fa-clock-o"></i> {{message.seenTimestamp}}</small>
+        </div>
+      </div>
+        </div>
+        </div>
+        <div *ngIf="message.senderUid == this.currentUid">
+      <div class="message-feed right" >
+        <div *ngIf="this.currentUserType=='ADMIN'" class="pull-right">
+          <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt class="img-avatar">
+        </div>
+        <div *ngIf="this.currentUserType=='CLIENT'" class="pull-right">
+          <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt class="img-avatar">
+        </div>
+        <div class="media-body">
+          <div class="mf-content">
+            {{message.message}}
+          </div>
+          <small class="mf-date"><i class="fa fa-clock-o"></i> {{message.sentTimestamp}}</small>
+          <small class="mf-date"><i class="fa fa-clock-o"></i> {{message.seenTimestamp}}</small>
+        </div>
+      </div>
+        </div>
+    </div>
+
+      <div class="msb-reply">
+        <textarea placeholder="" [(ngModel)]="this.typedMessage" (ngModelChange)="typing(this.currentUid)"></textarea>
+        <button (click)="sendMessage()"><i class="fa fa-paper-plane-o"></i></button>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Energy Management System</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="assets/logo.png" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+</head>
+<body>
+<!-- Responsive navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#!">EMS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/client/client-home-page">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/welcome/login-page">Login</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page"  href="/welcome/home-page">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Header - set the background image for the header in the line below-->
+<header class="py-1 bg-image-full" style="background-image: url('../../../assets/wallpaper1.jpg')">
+  <div style="height: 4rem"></div>
+  <div class="text-center my-5">
+    <img class="img-fluid rounded-circle mb-2" src='./assets/small_logo.png' alt="..." />
+    <h1 class="text-black fs-3 fw-bolder">Energy Management System</h1>
+    <p class="text-black-50 mb-0">Your energy assistant</p>
+  </div>
+</header>
+<!-- Content section-->
+<section class="py-5">
+  <div class="container my-5">
+    <div class="row justify-content-center">
+
+      <h3 >Check your energy consumption below</h3>
+      <h2 class="lead"> Here you can check the amount of energy consumed by your devices by hour</h2>
+    </div>
+  </div>
+  <div class="container my-5">
+    <div>  <mat-form-field color="primary" appearance="fill">
+      <mat-label>Select the date</mat-label>
+      <input matInput [matDatepicker]="picker2"  [(ngModel)]="selectedDate" (ngModelChange)="selectDate()">
+      <mat-datepicker-toggle matIconSuffix [for]="picker2"></mat-datepicker-toggle>
+      <mat-datepicker #picker2 color="primary"></mat-datepicker>
+    </mat-form-field>
+      <mat-form-field class="form-input" appearance="fill">
+        <mat-label>Select device</mat-label>
+        <mat-select id = "device" (selectionChange)="selectDevice($event.value)" >
+          <mat-option  *ngFor="let device of this.devices" value= {{device}}>{{device}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <canvasjs-chart [options]="chartOptions" [styles]="{width: '100%', height: '360px'}"></canvasjs-chart>
+  </div>
+</section>
+
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+  <div class="container"><p class="m-0 text-center text-white">Copyright &copy; EMS 2023</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
+</html>
+
+

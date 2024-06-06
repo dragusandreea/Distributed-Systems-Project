@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+  <title>Energy Management System</title>
+  <!-- Favicon-->
+  <link rel="icon" type="image/x-icon" href="assets/logo.png" />
+  <!-- Core theme CSS (includes Bootstrap)-->
+</head>
+<body>
+<!-- Responsive navbar-->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#!">EMS</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/client/client-home-page">Home</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/client/client-charts-page">Chart</a></li>
+        <li class="nav-item active"><a class="nav-link" href="/chat-page">Chat Page</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/welcome/login-page">Login</a></li>
+        <li class="nav-item"><a class="nav-link active" aria-current="page" (click)="logOut()" href="/welcome/home-page">Logout</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+<!-- Header - set the background image for the header in the line below-->
+<header class="py-1 bg-image-full" style="background-image: url('../../../assets/wallpaper1.jpg')">
+  <div style="height: 4rem"></div>
+  <div class="text-center my-5">
+    <img class="img-fluid rounded-circle mb-2" src='./assets/small_logo.png' alt="..." />
+    <h1 class="text-black fs-3 fw-bolder">Energy Management System</h1>
+    <p class="text-black-50 mb-0">Your energy assistant</p>
+  </div>
+</header>
+<!-- Content section-->
+<section class="py-5">
+  <div class="container my-5">
+    <div class="row justify-content-center">
+
+      <h3 >Welcome back to EMS!</h3>
+      <h2 class="lead"> Whether you're a homeowner, a business owner, or a facility manager, our Energy Management System is the ultimate solution to elevate your energy management to new heights. Join us on this journey toward a sustainable, cost-effective, and eco-conscious future. </h2>
+      <h2 class="lead">Get started today and take control of your energy destiny! </h2>
+    </div>
+  </div>
+</section>
+<!-- Image element - set the background image for the header in the line below-->
+<div class="py-5 bg-image-full" style="background-image: url('./assets/wallpaper2.jpg')">F
+  <!-- Put anything you want here! The spacer below with inline CSS is just for demo purposes!-->
+  <div style="height: 20rem"></div>
+</div>
+<!-- Content section-->
+<div class = "container-fluid">
+  <h1 class="mt-4">EMS device database query</h1>
+  <div>
+    <mat-form-field appearance="outline" *ngIf="this.queryMethod != 'findByOwnerId'">
+      <mat-label>Query Param</mat-label>
+      <input matInput [(ngModel)]="queryParam">
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Select</mat-label>
+      <mat-select id = "querySelect" (selectionChange)="changeQuery($event.value)">
+        <mat-option value="findByOwnerId">find all my devices</mat-option>
+        <mat-option value="findById">find by id</mat-option>
+        <mat-option value="findByDescription">find by description</mat-option>
+        <mat-option value="findByAddress">find by address</mat-option>
+        <mat-option value="findByHourlyLimit">find by hourly limit</mat-option>
+        <mat-option value="findByHourlyLimitLessThan">find by hourly limit less than</mat-option>
+        <mat-option value="findByHourlyLimitGreaterThan">find by hourly limit greater than</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <div>
+      <button mat-raised-button color="orange" (click)="queryUserDataBase()">
+        Search
+      </button>
+    </div>
+  </div>
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <ng-container [matColumnDef]="col.key" *ngFor="let col of columnsSchema">
+      <th mat-header-cell *matHeaderCellDef [ngSwitch]="col.key">
+        <span *ngSwitchDefault>{{ col.label }}</span>
+      </th>
+      <td mat-cell *matCellDef="let element">
+        <div [ngSwitch]="col.type" *ngIf="!element.isEdit">
+          <ng-container *ngSwitchCase="'isSelected'">
+            <mat-checkbox
+              (change)="element.isSelected = $event.checked"
+              [checked]="element.isSelected"
+            ></mat-checkbox>
+          </ng-container>
+          <div class="btn-edit" *ngSwitchCase="'isEdit'">
+          </div>
+
+          <span *ngSwitchDefault>
+          {{ element[col.key] }}
+        </span>
+        </div>
+        <div [ngSwitch]="col.type" *ngIf="element.isEdit">
+          <div *ngSwitchCase="'isSelected'"></div>
+          <div class="btn-edit" *ngSwitchCase="'isEdit'">
+            <button
+              mat-raised-button color="orange"
+              (click)="editRow(element)"
+              [disabled]="disableSubmit(element.id)"
+            >
+              Done
+            </button>
+          </div>
+
+          <div *ngSwitchDefault>
+            <mat-form-field class="form-input" *ngIf="col.key != 'id' && col.key != 'userType' ">
+              <input
+                matInput
+                [required]="col.required"
+                [pattern]="col.pattern"
+                [type]="col.type"
+                [(ngModel)]="element[col.key]"
+                (change)="inputHandler($event, element.id, col.key)"
+              />
+            </mat-form-field>
+
+          </div>
+        </div>
+
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+</div>
+<!-- Footer-->
+<footer class="py-5 bg-dark">
+  <div class="container"><p class="m-0 text-center text-white">Copyright &copy; EMS 2023</p></div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+</body>
+</html>
+

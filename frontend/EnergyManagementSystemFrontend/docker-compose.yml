@@ -1,0 +1,10 @@
+version: '3'
+services:
+  app:
+    image: energy-management-frontend:latest
+    container_name: frontend_ems
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+      - "4200:4200"
